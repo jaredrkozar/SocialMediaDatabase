@@ -176,7 +176,7 @@ const init = async (queryToRun) => {
         const getSecondUserID = await init('SELECT user_id FROM SocialMedia.users WHERE user_name = ' + '"' + followSecondUser + '"');
   
         const isFollowing = await init("SELECT * from SocialMedia.user_followers WHERE EXISTS(SELECT * FROM SocialMedia.user_followers WHERE user_follower_id = " + "'" + getUserID[0].user_id + "' AND current_user_id = " + "'" + getSecondUserID[0].user_id + "')")
-
+        console.log("HI")
         if(0 < isFollowing.length) {
             await init('DELETE FROM SocialMedia.user_followers WHERE user_follower_id = ' + '"' + getUserID[0].user_id + '" AND current_user_id = ' + '"' + getSecondUserID[0].user_id + '"')
         } else {
