@@ -27,14 +27,16 @@ async function getUserInput() {
 }
 
 async function getEmployeeInput() {
-    console.log("What would you like to do? Type: \n - new-employee to add a new employee \n - view-employee to view info about an existing employee (department, manager etc.) ");
+    console.log("What would you like to do? Type: \n - new-employee to add a new employee \n - view-employee to view info about an existing employee (department, manager etc.) \n - remove-employee to remove an employee ");
     var employeeOption = prompt("");
 
     if (employeeOption =='new-employee') {
         await employee.newEmployee();
     } else if (employeeOption =='view-employee') {
        await employee.viewEmployee();
-    } 
+    }  else if (employeeOption =='remove-employee') {
+        await employee.removeEmployee();
+    }
 }
 
 async function init() {

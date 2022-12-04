@@ -96,4 +96,22 @@ async function viewEmployee() {
     }
 }
 
-module.exports = {newEmployee, viewEmployee}
+async function removeEmployee() {
+    const rows = await common.getData('SELECT * FROM SocialMedia.employees ORDER BY username');
+
+    if(rows.length != 0) {
+        for(let i = 0; i<rows.length;i++) {
+            console.log(rows[i].username);
+        }
+    
+        const option = prompt("Enter the username of the employee who you want to remove");
+    
+        const employeeID = await common.getData('SELECT * FROM SocialMedia.employees WHERE username = ' + '"' + option + '"');
+    
+        await common.getData("DELETE FROM SocialMedia.employees WHERE employee_id = " + "'" + employeeID[0].employee_id + "'");
+    } else {
+        console.log("you need to hire some users!")
+    }
+}
+
+module.exports = {newEmployee, viewEmployee, removeEmployee}
