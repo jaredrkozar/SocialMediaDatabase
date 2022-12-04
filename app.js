@@ -3,7 +3,7 @@ const user = require('./userFunctions.js');
 const employee = require('./employeeFunctions.js');
 
 async function getUserInput() {
-    console.log("What would you like to do? Type view-user to view users, type new-tweet to add some sample tweets, type new-user to add a new user, delete-tweet to delete someones tweet, or type delete-account to delete a user. ");
+    console.log("What would you like to do? Type: \n - view-user to view users \n - new-tweet to add some sample tweets \n - new-user to add a new user \n - delete-tweet to delete someones tweet \n - delete-account to delete a user \n - like-tweet to like a users tweet \n - block-user to block a user. ");
     var option = prompt("");
 
     if (option =='view-user') {
@@ -22,7 +22,7 @@ async function getUserInput() {
         await user.insertUsers();
     }
     console.log("\r\n"); 
-    console.log("What would you like to do? Type view-users to view users, type new-tweet to add some sample tweets, type new-user to add a new user, delete-tweet to delete someones tweet, or type delete-account to delete a user.");
+    console.log("What would you like to do? Type: \n view-user to view users \n new-tweet to add some sample tweets \n new-user to add a new user \n delete-tweet to delete someones tweet \n delete-account to delete a user \n like-tweet to like a users tweet \n block-user to block a user. ");
     option = prompt("");
 }
 

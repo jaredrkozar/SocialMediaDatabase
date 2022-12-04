@@ -221,7 +221,7 @@ async function blockUser() {
     } else {
         console.log("This user is already blocked. Do you want to unblock them? Type yes or no")
         const unblockUser = prompt("");
-        
+
         if(unblockUser == "yes") {
             await common.getData("DELETE FROM SocialMedia.blocked_users WHERE blocked_user_id = " + "'" + whoWantsToBlockUserID + "'" + "AND user_id = " + "'" + option + "'");
         }
@@ -229,4 +229,4 @@ async function blockUser() {
     }
 }
 
-module.exports = {deleteTweet, insertUsers, viewUser, insertTweets, followUser, deleteAccount}
+module.exports = {deleteTweet, insertUsers, viewUser, insertTweets, followUser, deleteAccount, likeTweet, blockUser}
