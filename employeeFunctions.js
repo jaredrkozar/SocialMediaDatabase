@@ -120,7 +120,7 @@ async function removeEmployee() {
     
         const employeeID = await common.getData('SELECT * FROM SocialMedia.employees WHERE username = ' + '"' + employeeUsername + '"', [], true);
     
-        await common.getData("DELETE FROM SocialMedia.employees WHERE employee_id = " + "'" + employeeID[0].employee_id + "'", [], true);
+        await common.getData("DELETE FROM SocialMedia.employees WHERE employee_id = " + "'" + employeeID[0].employee_id + "'", [], false);
     } else {
         console.log("you need to hire some users!")
     }
