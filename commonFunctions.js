@@ -72,8 +72,8 @@ function createNewEmployeeDepartment(num) {
   const departmentNames = ['Accounting', 'HR', 'Technologt', 'Design', 'Legal', 'Marketing', 'Customer Support', 'Trust and Safety', 'Operations', 'Strategy', 'Tech Support', 'Administration'];
 
   return [
-    departmentNames[Math.floor(Math.random() * departmentNames.length)],
 		faker.name.fullName(),
+    departmentNames[Math.floor(Math.random() * departmentNames.length)],
       num,
 ];
 }

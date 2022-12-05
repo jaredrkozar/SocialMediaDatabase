@@ -35,7 +35,7 @@ async function deleteTweet() {
 
 async function insertUsers() {
     console.log("Inserting 30 random users into the database...")
-    console.log("type control-c on Mac to add users....not sure why this happens?????")
+    
     const newUsers = [];
 
     const lastUser = await common.getData('SELECT user_id FROM SocialMedia.users ORDER BY user_id');
