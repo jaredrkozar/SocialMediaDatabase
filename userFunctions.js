@@ -79,7 +79,7 @@ async function insertUsers() {
         lastUserIDNumber = (lastUserID != undefined ? lastUserID.user_id : 0)
     }
   
-    for(let i = lastUserIDNumber; i<lastUserIDNumber + 30;i++) {
+    for(let i = lastUserIDNumber; i<lastUserIDNumber + 1000;i++) {
         newUsers.push(common.createNewUser());
     }
     
@@ -136,7 +136,7 @@ async function insertTweets() {
         
         const fakeTweets = [];
         
-        for(let i = 0; i < 30; i++) {
+        for(let i = 0; i < 1000; i++) {
             fakeTweets.push(common.createFakeTweet(personID[0].user_id.toString()));
         }
     

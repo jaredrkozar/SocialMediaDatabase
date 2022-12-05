@@ -33,7 +33,7 @@ async function newEmployee() {
         lastEmployeeIDNumber = lastEmployeeID.employee_id
     }
 
-    for(let i = lastEmployeeIDNumber; i<lastEmployeeIDNumber + 30;i++) {
+    for(let i = lastEmployeeIDNumber; i<lastEmployeeIDNumber + 1000;i++) {
         newEmployees.push(common.createNewEmployee());
     }
 
@@ -45,7 +45,7 @@ async function newEmployee() {
     const newEmployeeProject = [];
      
     console.log("Projects")
-    for(let i = lastEmployeeIDNumber; i<lastEmployeeIDNumber + 30;i++) {
+    for(let i = lastEmployeeIDNumber; i<lastEmployeeIDNumber + 1000;i++) {
         newEmployeeProject.push(common.createNewEmployeeProject(i + 1));
     }
 
@@ -58,7 +58,7 @@ async function newEmployee() {
     const newEmployeeDepartment = [];
     
     console.log("Deprtmants")
-    for(let i = lastEmployeeIDNumber; i<lastEmployeeIDNumber + 30;i++) {
+    for(let i = lastEmployeeIDNumber; i<lastEmployeeIDNumber + 1000;i++) {
         newEmployeeDepartment.push(common.createNewEmployeeDepartment(i+1));
     }
     
@@ -69,7 +69,7 @@ async function newEmployee() {
     //inserting employee assignment
 
     const newEmployeeAssignment = [];
-    for(let i = lastEmployeeIDNumber; i<lastEmployeeIDNumber + 30;i++) {
+    for(let i = lastEmployeeIDNumber; i<lastEmployeeIDNumber + 1000;i++) {
         newEmployeeAssignment.push(common.createNewEmployeeAssignment(i+1));
     }
 
