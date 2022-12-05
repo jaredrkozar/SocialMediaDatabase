@@ -40,17 +40,22 @@ async function insertUsers() {
 
     const lastUser = await common.getData('SELECT user_id FROM SocialMedia.users ORDER BY user_id');
 
-    const lastUserID = lastUser[lastUser.length - 1]
+    var lastUserIDNumber = 0;
 
-    for(let i = (lastUserID != undefined ? lastUserID : 0); i<30;i++) {
+    if (lastUser.length != 0) {
+        const lastUserID = lastUser[lastUser.length - 1]
+        console.log(lastUserID)
+        lastUserIDNumber = (lastUserID != undefined ? lastUserID.user_id : 0)
+    }
+  
+    for(let i = lastUserIDNumber; i<lastUserIDNumber + 30;i++) {
         newUsers.push(common.createNewUser());
     }
-
+    console.log(newUsers)
     var insertQuery = "INSERT INTO SocialMedia.users (user_firstName, user_lastName, user_name, user_password, user_avatar, bioText, mobilePhone, registerDate) VALUES ?";
 
     common.connection.query(insertQuery, [newUsers], (err, res) => {
         console.log(err, res);
-        common.connection.end();
         console.log("ENDED")
     });
 }
@@ -97,16 +102,13 @@ async function insertTweets() {
     const rows = await common.getData('SELECT * FROM SocialMedia.users ORDER BY user_name');
         
     if (rows.length != 0) {
-        const lastTweet = await common.getData('SELECT tweet_id FROM SocialMedia.user_tweets ORDER BY tweet_id');
 
-        const lastTweetID = lastTweet[lastTweet.length - 1]
-    
-        for(let i = (lastTweetID != undefined ? lastTweetID : 0); i<rows.length;i++) {
+        for(let i = 0; i<rows.length;i++) {
             console.log(rows[i].user_name);
         }
     
         const option = prompt("Enter the username of the user whose tweets you want to generate");
-    
+
         const personID = await common.getData('SELECT * FROM SocialMedia.users WHERE user_name = ' + '"' + option + '"');
         
         const fakeTweets = [];
