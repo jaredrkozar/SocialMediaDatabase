@@ -3,13 +3,13 @@ const user = require('./userFunctions.js');
 const employee = require('./employeeFunctions.js');
 
 async function getUserInput() {
-    console.log("What would you like to do? Type: \n - view-user to view users \n - insert-users to insert some random users \n - new-tweet to add some sample tweets \n - new-user to add a new user \n - delete-tweet to delete someones tweet \n - delete-account to delete a user \n - like-tweet to like a users tweet \n - block-user to block a user \n - back to go back s");
+    console.log("What would you like to do? Type: \n - view-user to view users \n - new-user to insert some random users \n - new-tweet to add some sample tweets \n - new-user to add a new user \n - delete-tweet to delete someones tweet \n - delete-account to delete a user \n - like-tweet to like a users tweet \n - block-user to block a user \n - back to go back s");
     var option = prompt("");
 
     while(option!= "back") {
         if (option =='view-user') {
             await user.viewUser();
-        } else if (option =='insert-users') {
+        } else if (option =='new-user') {
           await user.insertUsers();
         } else if (option =='new-tweet') {
             await user.insertTweets();

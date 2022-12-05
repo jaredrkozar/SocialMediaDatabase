@@ -16,6 +16,7 @@ var connection = mysql.createConnection({
         password: "Zelda314",
     });
     
+    console.log("SQL Query " + query)
       const [rows, fields] = await db.query(query, array);
       db.end();
       return shouldReturn == true ? rows : null;

@@ -14,7 +14,7 @@ async function listEmployees(userPrompt) {
         }
         employeeOffset = employeeOffset + 5;
         
-        option = prompt(userPrompt + " Enter next to view the next 5 employees in the list ");
+        option = prompt(userPrompt + " Enter next to view the next 5 employees in the list: ");
     }
     return option
 }
@@ -94,9 +94,9 @@ async function viewEmployee() {
         console.log('Manager ' + userinfo[0].employee_manager);
         console.log('Username ' + userinfo[0].username);
         console.log('Email ' + userinfo[0].email);
-    
-        const departmentInfo = await common.getData('SELECT * FROM SocialMedia.employee_department WHERE employee_id = ' + '"' + userinfo[0].employee_id + '"', [], true);
-        console.log(departmentInfo[0])
+       
+        const departmentInfo = await common.getData("SELECT * FROM SocialMedia.employee_department WHERE employee_id = " + "'" + userinfo[0].employee_id + "'", [], true);
+
         console.log('The user is in the ' + departmentInfo[0].department_name + ' department and the departments manager is ' + departmentInfo[0].department_manager );
     
         const projectInfo = await common.getData('SELECT * FROM SocialMedia.employee_project WHERE employee_id = ' + '"' + userinfo[0].employee_id + '"', [], true);

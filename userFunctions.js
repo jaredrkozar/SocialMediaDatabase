@@ -14,7 +14,7 @@ async function listUsers(userPrompt) {
         }
         userOffset = userOffset + 5;
         
-        option = prompt(userPrompt + " Enter next to view the next 5 users in the list ");
+        option = prompt(userPrompt + " Enter next to view the next 5 users in the list: ");
     }
     return option
 }
@@ -36,7 +36,7 @@ async function listTweets(tweetPrompt, id) {
 
         tweetOffset = tweetOffset + 5;
         
-        option = prompt(tweetPrompt + " Enter next to view the next 5 tweets in the list ");
+        option = prompt(tweetPrompt + " Enter next to view the next 5 tweets in the list: ");
     }
     return parseInt(option);
 }
@@ -135,8 +135,9 @@ async function insertTweets() {
         const personID = await common.getData('SELECT * FROM SocialMedia.users WHERE user_name = ' + '"' + username + '"', [], true);
         
         const fakeTweets = [];
+        
         for(let i = 0; i < 30; i++) {
-            fakeTweets.push(common.createFakeTweet(personID[0].user_id));
+            fakeTweets.push(common.createFakeTweet(personID[0].user_id.toString()));
         }
     
         var insertTweetSQL = "INSERT INTO SocialMedia.user_tweets (tweet_text, date_posted, user_id) VALUES ?";
@@ -145,7 +146,7 @@ async function insertTweets() {
     
         console.log('Inserting 30 random tweets into ' + getuserName[0].user_name + 'account')
 
-        await common.getData(insertTweetSQL, fakeTweets, false);
+        await common.getData(insertTweetSQL, [fakeTweets], false);
     
     }
     
