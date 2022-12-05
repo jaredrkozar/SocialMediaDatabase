@@ -10,15 +10,19 @@ var connection = mysql.createConnection({
   async function getData(query, array, shouldReturn) {
     try {
         const mysql2 = require('mysql2/promise');
-      const db = await mysql2.createConnection({
+      const database = await mysql2.createConnection({
         host: "localhost",
         user: "root",
         password: "Zelda314",
     });
     
+    database.query('SET GLOBAL connect_timeout=28800')
+    database.query('SET GLOBAL wait_timeout=28800')
+    database.query('SET GLOBAL interactive_timeout=28800')
+
     console.log("SQL Query " + query)
-      const [rows, fields] = await db.query(query, array);
-      db.end();
+      const [rows, fields] = await database.query(query, array);
+      database.end();
       return shouldReturn == true ? rows : null;
     } catch (err) {
       console.log('An error occurred while fetching the sql: ', err);

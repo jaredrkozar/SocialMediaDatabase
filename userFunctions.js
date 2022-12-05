@@ -5,8 +5,7 @@ async function listUsers(userPrompt) {
     option = "next"
     var userOffset = 0;
 
-    while(option == "next") {
-
+    do {
         const userinfo = await common.getData('SELECT * FROM SocialMedia.users ORDER BY user_name LIMIT 5 OFFSET ' + userOffset, [], true);
 
         for(let i = 0; i<userinfo.length;i++) {
@@ -16,6 +15,8 @@ async function listUsers(userPrompt) {
         
         option = prompt(userPrompt + " Enter next to view the next 5 users in the list: ");
     }
+
+    while(option == "next")
     return option
 }
 
