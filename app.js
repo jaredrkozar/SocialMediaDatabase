@@ -3,7 +3,7 @@ const user = require('./userFunctions.js');
 const employee = require('./employeeFunctions.js');
 
 async function getUserInput() {
-    console.log("What would you like to do? Type: \n - view-user to view users \n - new-tweet to add some sample tweets \n - new-user to add a new user \n - delete-tweet to delete someones tweet \n - delete-account to delete a user \n - like-tweet to like a users tweet \n - block-user to block a user. ");
+    console.log("What would you like to do? Type: \n - view-user to view users \n - insert-users to insert some random users \n - new-tweet to add some sample tweets \n - new-user to add a new user \n - delete-tweet to delete someones tweet \n - delete-account to delete a user \n - like-tweet to like a users tweet \n - block-user to block a user. ");
     var option = prompt("");
 
     if (option =='view-user') {
@@ -18,7 +18,11 @@ async function getUserInput() {
         await user.deleteAccount();
     } else if (option =='follow-user') {
         await user.followUser();
-    } else {
+    } else if (option =='like-tweet') {
+        await user.likeTweet();
+    } else if (option =='block-user') {
+        await user.blockUser();
+    }else {
         console.log("\r\n"); 
         console.log("What would you like to do? Type: \n - view-user to view users \n - new-tweet to add some sample tweets \n - new-user to add a new user \n - delete-tweet to delete someones tweet \n - delete-account to delete a user \n - like-tweet to like a users tweet \n - block-user to block a user. ");
         option = prompt("");

@@ -1,6 +1,24 @@
 const common = require("./commonFunctions");
 const prompt = require("prompt-sync")();
 
+async function listEmployees(userPrompt) {
+    option = "next"
+    var employeeOffset = 0;
+
+    while(option == "next") {
+
+        const userinfo = await common.getData('SELECT * FROM SocialMedia.employees ORDER BY username LIMIT 5 OFFSET ' + employeeOffset);
+
+        for(let i = 0; i<userinfo.length;i++) {
+            console.log(userinfo[i].username);
+        }
+        employeeOffset = employeeOffset + 5;
+        
+        option = prompt(userPrompt + " Enter next to view the next 5 employees in the list ");
+    }
+    return option
+}
+
 async function newEmployee() {
     console.log("Inserting 30 random employees into the database...")
 
@@ -24,6 +42,7 @@ async function newEmployee() {
     common.connection.query(insertEmployeesQuery, [newEmployees], (err, res) => {
         console.log("Result", res);
         console.log("Error", err);
+        common.connection.end();
     });
 
     //inserting employee projects
@@ -37,6 +56,7 @@ async function newEmployee() {
     common.connection.query(insertEmployeeProjectsQuery, [newEmployeeProject], (err, res) => {
         console.log("Result", res);
         console.log("Error", err);
+        common.connection.end();
     });
 
     //inserting employee department
@@ -51,6 +71,7 @@ async function newEmployee() {
     common.connection.query(insertEmployeeDepartmentQuery, [newEmployeeDepartment], (err, res) => {
         console.log("Result", res);
         console.log("Error", err);
+        common.connection.end();
     });
 
     //inserting employee assignment
@@ -66,6 +87,7 @@ async function newEmployee() {
     common.connection.query(insertEmployeeAssignmentQuery, [newEmployeeAssignment], (err, res) => {
         console.log("Result", res);
         console.log("Error", err);
+        common.connection.end();
     });
 }
 
@@ -73,13 +95,10 @@ async function viewEmployee() {
     const rows = await common.getData('SELECT * FROM SocialMedia.employees ORDER BY username');
 
     if(rows.length != 0) {
-        for(let i = 0; i<rows.length;i++) {
-            console.log(rows[i].username);
-        }
-    
-        const option = prompt("Enter the username of the employee whose info you would like to view");
-    
-        const userinfo = await common.getData('SELECT * FROM SocialMedia.employees WHERE username = ' + '"' + option + '"');
+
+        const employeeID = await listEmployees("Enter the username of the employee whose info you would like to view")
+
+        const userinfo = await common.getData('SELECT * FROM SocialMedia.employees WHERE username = ' + '"' + employeeID + '"');
     
         console.log("\n");
         console.log('User info for ' + userinfo[0].username + ": ");
@@ -110,13 +129,9 @@ async function removeEmployee() {
     const rows = await common.getData('SELECT * FROM SocialMedia.employees ORDER BY username');
 
     if(rows.length != 0) {
-        for(let i = 0; i<rows.length;i++) {
-            console.log(rows[i].username);
-        }
+        const employeeUsername = await listEmployees("Enter the username of the employee who you want to remove")
     
-        const option = prompt("Enter the username of the employee who you want to remove");
-    
-        const employeeID = await common.getData('SELECT * FROM SocialMedia.employees WHERE username = ' + '"' + option + '"');
+        const employeeID = await common.getData('SELECT * FROM SocialMedia.employees WHERE username = ' + '"' + employeeUsername + '"');
     
         await common.getData("DELETE FROM SocialMedia.employees WHERE employee_id = " + "'" + employeeID[0].employee_id + "'");
     } else {
