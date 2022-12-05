@@ -85,10 +85,7 @@ async function insertUsers() {
     console.log(newUsers)
     var insertQuery = "INSERT INTO SocialMedia.users (user_firstName, user_lastName, user_name, user_password, user_avatar, bioText, mobilePhone, registerDate) VALUES ?";
 
-    common.connection.query(insertQuery, [newUsers], (err, res) => {
-        console.log(err, res);
-        console.log("ENDED")
-    });
+    await common.getData(insertQuery, [newUsers])
 }
 
 async function viewUser() {
@@ -209,8 +206,6 @@ async function likeTweet() {
         if (isTweetAlreadyLiked.length != 0) {
             await common.getData("DELETE FROM SocialMedia.user_likes WHERE tweet_id = " + "'" + likeTweetPrompt + "'" + "AND user_id = " + "'" + getSecondUserID + "'");
         } else {
-            console.log(getUserID)
-            console.log(getSecondUserID[0].user_id)
             await common.getData("INSERT INTO SocialMedia.user_likes (tweet_id, user_id, original_user_id) VALUES (" + "'" + likeTweetPrompt + "', '" + getSecondUserID[0].user_id + "', '" + getUserID[0].user_id + "')");
         }
     }

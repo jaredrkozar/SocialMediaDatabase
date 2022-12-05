@@ -39,56 +39,43 @@ async function newEmployee() {
 
     var insertEmployeesQuery = "INSERT INTO SocialMedia.employees (employee_name, employee_manager, username, email, currentPassword) VALUES ?";
     
-    common.connection.query(insertEmployeesQuery, [newEmployees], (err, res) => {
-        console.log("Result", res);
-        console.log("Error", err);
-        common.connection.end();
-    });
+    await common.getData(insertEmployeesQuery, [newEmployees])
 
     //inserting employee projects
     const newEmployeeProject = [];
+     
+    console.log("Projects")
     for(let i = lastEmployeeIDNumber; i<lastEmployeeIDNumber + 30;i++) {
         newEmployeeProject.push(common.createNewEmployeeProject(i + 1));
     }
 
     var insertEmployeeProjectsQuery = "INSERT INTO SocialMedia.employee_project (project_name, project_manager, project_duedate, employee_id) VALUES ?";
     
-    common.connection.query(insertEmployeeProjectsQuery, [newEmployeeProject], (err, res) => {
-        console.log("Result", res);
-        console.log("Error", err);
-        common.connection.end();
-    });
+    await common.getData(insertEmployeeProjectsQuery, [newEmployeeProject])
 
     //inserting employee department
 
     const newEmployeeDepartment = [];
+    
+    console.log("Deprtmants")
     for(let i = lastEmployeeIDNumber; i<lastEmployeeIDNumber + 30;i++) {
         newEmployeeDepartment.push(common.createNewEmployeeDepartment(i+1));
     }
     
     var insertEmployeeDepartmentQuery = "INSERT INTO SocialMedia.employee_department (department_manager, department_name, employee_id) VALUES ?";
     
-    common.connection.query(insertEmployeeDepartmentQuery, [newEmployeeDepartment], (err, res) => {
-        console.log("Result", res);
-        console.log("Error", err);
-        common.connection.end();
-    });
+    await common.getData(insertEmployeeDepartmentQuery, [newEmployeeDepartment])
 
     //inserting employee assignment
 
     const newEmployeeAssignment = [];
     for(let i = lastEmployeeIDNumber; i<lastEmployeeIDNumber + 30;i++) {
-        console.log(i)
         newEmployeeAssignment.push(common.createNewEmployeeAssignment(i+1));
     }
 
     var insertEmployeeAssignmentQuery = "INSERT INTO SocialMedia.employee_assignment (assignment_name, assignment_duedate, employee_id) VALUES ?";
     
-    common.connection.query(insertEmployeeAssignmentQuery, [newEmployeeAssignment], (err, res) => {
-        console.log("Result", res);
-        console.log("Error", err);
-        common.connection.end();
-    });
+    await common.getData(insertEmployeeAssignmentQuery, [newEmployeeAssignment])
 }
 
 async function viewEmployee() {

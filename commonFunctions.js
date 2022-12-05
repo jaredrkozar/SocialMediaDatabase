@@ -7,7 +7,7 @@ var connection = mysql.createConnection({
     password: "Zelda314",
 });
 
-  async function getData(query) {
+  async function getData(query, array) {
     try {
         const mysql2 = require('mysql2/promise');
       const db = await mysql2.createConnection({
@@ -16,7 +16,7 @@ var connection = mysql.createConnection({
         password: "Zelda314",
     });
     
-      const [rows, fields] = await db.query(query);
+      const [rows, fields] = await db.query(query, array);
       db.end();
       return rows;
     } catch (err) {
