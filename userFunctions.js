@@ -50,7 +50,7 @@ async function deleteTweet() {
     if (numberOfTweets != undefined) {
         
         const getUserID = await common.getData('SELECT user_id, user_name FROM SocialMedia.users WHERE user_name = ' + '"' + option + '"', [], true);
-        
+   
         const userinfo = await common.getData('SELECT * FROM SocialMedia.user_tweets WHERE user_id = ' + '"' + getUserID[0].user_id + '"', [], true);
         if (userinfo.length == 0) {
             console.log("The user " + getUserID[0].user_name + ' has no tweets')
@@ -177,9 +177,9 @@ async function deleteAccount() {
     if (rows.length != 0) {
         const username = await listUsers();
     
-        const getUserID = await common.getData('SELECT user_id FROM SocialMedia.users WHERE user_name = ' + '"' + username + '"');
-        
-        await common.getData('DELETE FROM SocialMedia.users WHERE user_id = ' + '"' + getUserID[0].user_id + '" AND user_name = ' + '"' + option + '"', [], false);
+        const getUserID = await common.getData('SELECT user_id FROM SocialMedia.users WHERE user_name = ' + '"' + username + '"', [], true);
+
+        await common.getData('DELETE FROM SocialMedia.users WHERE user_name = ' + '"' + username + '" AND user_id = ' + '"' + getUserID[0].user_id + '"', [], false);
     } else {
         console.log("you need to insert some users!")
     }
