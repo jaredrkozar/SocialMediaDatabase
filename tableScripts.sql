@@ -26,14 +26,23 @@ CREATE TABLE user_tweets (
 CREATE TABLE user_likes (
     tweet_id BIGINT(255),
     user_id BIGINT(255),
+    original_user_id BIGINT(255),
     FOREIGN KEY(tweet_id) REFERENCES user_tweets(tweet_id),
-    FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE
+    FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY(original_user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE user_followers (
     user_follower_id BIGINT(255),
     current_user_id BIGINT(255),
-    FOREIGN KEY(user_follower_id) REFERENCES users(user_id),
+    FOREIGN KEY(user_follower_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY(current_user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE user_followees (
+    user_followee_id BIGINT(255),
+    current_user_id BIGINT(255),
+    FOREIGN KEY(user_followee_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY(current_user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
@@ -72,13 +81,13 @@ CREATE TABLE employee_department (
      project_name VARCHAR(50),
      project_manager VARCHAR(50),
      project_duedate DATE,
-     employee_id BIGINT(255) AUTO_INCREMENT,
+     employee_id BIGINT(255),
      FOREIGN KEY(employee_id) REFERENCES employees(employee_id) ON DELETE CASCADE
  ); 
  
 CREATE TABLE employee_assignment (
     assignment_name VARCHAR(50),
     assignment_duedate DATE,
-    employee_id BIGINT(255) AUTO_INCREMENT,
+    employee_id BIGINT(255),
     FOREIGN KEY(employee_id) REFERENCES employees(employee_id) ON DELETE CASCADE
 );
