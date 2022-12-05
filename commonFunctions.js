@@ -44,7 +44,7 @@ var connection = mysql.createConnection({
         faker.image.avatar(),
         faker.lorem.lines(1),
         faker.phone.number(),
-        '2022-04-22'
+        faker.date.past(),
     ];
     }
 
