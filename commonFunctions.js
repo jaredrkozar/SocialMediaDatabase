@@ -7,7 +7,7 @@ var connection = mysql.createConnection({
     password: "Zelda314",
 });
 
-  async function getData(query, array) {
+  async function getData(query, array, shouldReturn) {
     try {
         const mysql2 = require('mysql2/promise');
       const db = await mysql2.createConnection({
@@ -18,7 +18,7 @@ var connection = mysql.createConnection({
     
       const [rows, fields] = await db.query(query, array);
       db.end();
-      return rows;
+      return shouldReturn == true ? rows : null;
     } catch (err) {
       console.log('An error occurred while fetching the sql: ', err);
     }

@@ -7,7 +7,7 @@ async function listEmployees(userPrompt) {
 
     while(option == "next") {
 
-        const userinfo = await common.getData('SELECT * FROM SocialMedia.employees ORDER BY username LIMIT 5 OFFSET ' + employeeOffset);
+        const userinfo = await common.getData('SELECT * FROM SocialMedia.employees ORDER BY username LIMIT 5 OFFSET ' + employeeOffset, [], true);
 
         for(let i = 0; i<userinfo.length;i++) {
             console.log(userinfo[i].username);
@@ -24,7 +24,7 @@ async function newEmployee() {
 
     const newEmployees = [];
 
-    const lastEmployee = await common.getData('SELECT employee_id FROM SocialMedia.employees ORDER BY employee_id');
+    const lastEmployee = await common.getData('SELECT employee_id FROM SocialMedia.employees ORDER BY employee_id', [], true);
     console.log(lastEmployee)
     var lastEmployeeIDNumber = 0;
 
@@ -39,7 +39,7 @@ async function newEmployee() {
 
     var insertEmployeesQuery = "INSERT INTO SocialMedia.employees (employee_name, employee_manager, username, email, currentPassword) VALUES ?";
     
-    await common.getData(insertEmployeesQuery, [newEmployees])
+    await common.getData(insertEmployeesQuery, [newEmployees], false)
 
     //inserting employee projects
     const newEmployeeProject = [];
@@ -51,7 +51,7 @@ async function newEmployee() {
 
     var insertEmployeeProjectsQuery = "INSERT INTO SocialMedia.employee_project (project_name, project_manager, project_duedate, employee_id) VALUES ?";
     
-    await common.getData(insertEmployeeProjectsQuery, [newEmployeeProject])
+    await common.getData(insertEmployeeProjectsQuery, [newEmployeeProject], false)
 
     //inserting employee department
 
@@ -64,7 +64,7 @@ async function newEmployee() {
     
     var insertEmployeeDepartmentQuery = "INSERT INTO SocialMedia.employee_department (department_manager, department_name, employee_id) VALUES ?";
     
-    await common.getData(insertEmployeeDepartmentQuery, [newEmployeeDepartment])
+    await common.getData(insertEmployeeDepartmentQuery, [newEmployeeDepartment], false)
 
     //inserting employee assignment
 
@@ -75,17 +75,17 @@ async function newEmployee() {
 
     var insertEmployeeAssignmentQuery = "INSERT INTO SocialMedia.employee_assignment (assignment_name, assignment_duedate, employee_id) VALUES ?";
     
-    await common.getData(insertEmployeeAssignmentQuery, [newEmployeeAssignment])
+    await common.getData(insertEmployeeAssignmentQuery, [newEmployeeAssignment], false)
 }
 
 async function viewEmployee() {
-    const rows = await common.getData('SELECT * FROM SocialMedia.employees ORDER BY username');
+    const rows = await common.getData('SELECT * FROM SocialMedia.employees ORDER BY username', [], true);
 
     if(rows.length != 0) {
 
         const employeeID = await listEmployees("Enter the username of the employee whose info you would like to view")
 
-        const userinfo = await common.getData('SELECT * FROM SocialMedia.employees WHERE username = ' + '"' + employeeID + '"');
+        const userinfo = await common.getData('SELECT * FROM SocialMedia.employees WHERE username = ' + '"' + employeeID + '"', [], true);
     
         console.log("\n");
         console.log('User info for ' + userinfo[0].username + ": ");
@@ -95,15 +95,15 @@ async function viewEmployee() {
         console.log('Username ' + userinfo[0].username);
         console.log('Email ' + userinfo[0].email);
     
-        const departmentInfo = await common.getData('SELECT * FROM SocialMedia.employee_department WHERE employee_id = ' + '"' + userinfo[0].employee_id + '"');
+        const departmentInfo = await common.getData('SELECT * FROM SocialMedia.employee_department WHERE employee_id = ' + '"' + userinfo[0].employee_id + '"', [], true);
         console.log(departmentInfo[0])
         console.log('The user is in the ' + departmentInfo[0].department_name + ' department and the departments manager is ' + departmentInfo[0].department_manager );
     
-        const projectInfo = await common.getData('SELECT * FROM SocialMedia.employee_project WHERE employee_id = ' + '"' + userinfo[0].employee_id + '"');
+        const projectInfo = await common.getData('SELECT * FROM SocialMedia.employee_project WHERE employee_id = ' + '"' + userinfo[0].employee_id + '"', [], true);
     
         console.log('The employees current project is ' + projectInfo[0].project_name + ' , the projects manager is ' + projectInfo[0].project_manager + 'and the rojecta due date is ' + projectInfo[0].project_duedate );
     
-        const assignmentInfo = await common.getData('SELECT * FROM SocialMedia.employee_assignment WHERE employee_id = ' + '"' + userinfo[0].employee_id + '"');
+        const assignmentInfo = await common.getData('SELECT * FROM SocialMedia.employee_assignment WHERE employee_id = ' + '"' + userinfo[0].employee_id + '"', [], true);
         
         console.log('The employees current assignment is ' + assignmentInfo[0].assignment_name + ' , the assignments due date is ' + assignmentInfo[0].assignment_duedate);
     
@@ -113,14 +113,14 @@ async function viewEmployee() {
 }
 
 async function removeEmployee() {
-    const rows = await common.getData('SELECT * FROM SocialMedia.employees ORDER BY username');
+    const rows = await common.getData('SELECT * FROM SocialMedia.employees ORDER BY username', [], true);
 
     if(rows.length != 0) {
         const employeeUsername = await listEmployees("Enter the username of the employee who you want to remove")
     
-        const employeeID = await common.getData('SELECT * FROM SocialMedia.employees WHERE username = ' + '"' + employeeUsername + '"');
+        const employeeID = await common.getData('SELECT * FROM SocialMedia.employees WHERE username = ' + '"' + employeeUsername + '"', [], true);
     
-        await common.getData("DELETE FROM SocialMedia.employees WHERE employee_id = " + "'" + employeeID[0].employee_id + "'");
+        await common.getData("DELETE FROM SocialMedia.employees WHERE employee_id = " + "'" + employeeID[0].employee_id + "'", [], true);
     } else {
         console.log("you need to hire some users!")
     }
