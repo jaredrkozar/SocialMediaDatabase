@@ -72,6 +72,7 @@ async function init() {
         console.log("Do you want to view users or employees?");
         var userInput = prompt("");
     }
+    process.exit();
 }
 
 init();
