@@ -5,8 +5,10 @@ async function newEmployee() {
     console.log("Inserting 30 random employees into the database...")
 
     const newEmployees = [];
-    console.log(common.createNewEmployee)
-    for(let i = 0; i<30;i++) {
+    const lastEmployee = await common.getData('SELECT employee_id FROM SocialMedia.employees ORDER BY employee_id');
+
+    const lastEmployeeID = lastEmployee[lastEmployee.length - 1]
+    for(let i = (lastEmployeeID != undefined ? lastEmployeeID : 0); i<30;i++) {
         newEmployees.push(common.createNewEmployee());
     }
 
@@ -19,8 +21,8 @@ async function newEmployee() {
 
     //inserting employee projects
     const newEmployeeProject = [];
-    for(let i = 0; i<30;i++) {
-        newEmployeeProject.push(common.createNewEmployeeProject(i + 1));
+    for(let i=(lastEmployeeID != undefined ? lastEmployeeID : 0); i<30;i++) {
+        newEmployeeProject.push(common.createNewEmployeeProject(i));
     }
 
     var insertEmployeeProjectsQuery = "INSERT INTO SocialMedia.employee_project (project_name, project_manager, project_duedate, employee_id) VALUES ?";
@@ -33,8 +35,8 @@ async function newEmployee() {
     //inserting employee department
 
     const newEmployeeDepartment = [];
-    for(let i = 0; i<30;i++) {
-        newEmployeeDepartment.push(common.createNewEmployeeDepartment(i + 1));
+    for(let i=(lastEmployeeID != undefined ? lastEmployeeID : 0); i<30;i++) {
+        newEmployeeDepartment.push(common.createNewEmployeeDepartment(i));
     }
     console.log(newEmployeeDepartment[1])
     var insertEmployeeDepartmentQuery = "INSERT INTO SocialMedia.employee_department (department_manager, department_name, employee_id) VALUES ?";
@@ -47,8 +49,8 @@ async function newEmployee() {
     //inserting employee assignment
 
     const newEmployeeAssignment = [];
-    for(let i = 0; i<30;i++) {
-        newEmployeeAssignment.push(common.createNewEmployeeAssignment(i + 1));
+    for(let i=(lastEmployeeID != undefined ? lastEmployeeID : 0); i<30;i++) {
+        newEmployeeAssignment.push(common.createNewEmployeeAssignment(i));
     }
 
     var insertEmployeeAssignmentQuery = "INSERT INTO SocialMedia.employee_assignment (assignment_name, assignment_duedate, employee_id) VALUES ?";

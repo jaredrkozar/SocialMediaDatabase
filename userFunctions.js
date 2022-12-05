@@ -38,16 +38,20 @@ async function insertUsers() {
     console.log("type control-c on Mac to add users....not sure why this happens?????")
     const newUsers = [];
 
-    for(let i = 0; i<30;i++) {
+    const lastUser = await common.getData('SELECT user_id FROM SocialMedia.users ORDER BY user_id');
+
+    const lastUserID = lastUser[lastUser.length - 1]
+
+    for(let i = (lastUserID != undefined ? lastUserID : 0); i<30;i++) {
         newUsers.push(common.createNewUser());
     }
 
     var insertQuery = "INSERT INTO SocialMedia.users (user_firstName, user_lastName, user_name, user_password, user_avatar, bioText, mobilePhone, registerDate) VALUES ?";
 
-
     common.connection.query(insertQuery, [newUsers], (err, res) => {
-        console.log("REsult", res);
-        console.log("Error", err);
+        console.log(err, res);
+        common.connection.end();
+        console.log("ENDED")
     });
 }
 
@@ -92,27 +96,34 @@ async function insertTweets() {
 
     const rows = await common.getData('SELECT * FROM SocialMedia.users ORDER BY user_name');
         
-    for(let i = 0; i<rows.length;i++) {
-        console.log(rows[i].user_name);
-    }
+    if (rows.length != 0) {
+        const lastTweet = await common.getData('SELECT tweet_id FROM SocialMedia.user_tweets ORDER BY tweet_id');
 
-    const option = prompt("Enter the username of the user whose tweets you want to generate");
-
-    const personID = await common.getData('SELECT * FROM SocialMedia.users WHERE user_name = ' + '"' + option + '"');
+        const lastTweetID = lastTweet[lastTweet.length - 1]
     
-    const fakeTweets = [];
-    for(let i = 0; i < 30; i++) {
-        fakeTweets.push(common.createFakeTweet(personID[0].user_id));
+        for(let i = (lastTweetID != undefined ? lastTweetID : 0); i<rows.length;i++) {
+            console.log(rows[i].user_name);
+        }
+    
+        const option = prompt("Enter the username of the user whose tweets you want to generate");
+    
+        const personID = await common.getData('SELECT * FROM SocialMedia.users WHERE user_name = ' + '"' + option + '"');
+        
+        const fakeTweets = [];
+        for(let i = 0; i < 30; i++) {
+            fakeTweets.push(common.createFakeTweet(personID[0].user_id));
+        }
+    
+        var insertTweetSQL = "INSERT INTO SocialMedia.user_tweets (tweet_text, date_posted, user_id) VALUES ?";
+    
+        const getuserName = await common.getData('SELECT user_name FROM SocialMedia.users WHERE user_id = ' + '"' + personID[0].user_id + '"');
+    
+        console.log('Inserting 30 random tweets into ' + getuserName[0].user_name + 'account')
+        common.connection.query(insertTweetSQL, [fakeTweets], (err, res) => {
+            console.log(err, res);
+        });
     }
-
-    var insertTweetSQL = "INSERT INTO SocialMedia.user_tweets (tweet_text, date_posted, user_id) VALUES ?";
-
-    const getuserName = await common.getData('SELECT user_name FROM SocialMedia.users WHERE user_id = ' + '"' + personID[0].user_id + '"');
-
-    console.log('Inserting 30 random tweets into ' + getuserName[0].user_name + 'account')
-    common.connection.query(insertTweetSQL, [fakeTweets], (err, res) => {
-        console.log(err, res);
-    });
+    
 }
 
 async function followUser() {
