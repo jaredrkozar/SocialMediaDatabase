@@ -132,7 +132,7 @@ async function insertTweets() {
 
         const username = await listUsers();
 
-        const personID = await common.getData('SELECT * FROM SocialMedia.users WHERE user_name = ' + '"' + username + '"', [], false);
+        const personID = await common.getData('SELECT * FROM SocialMedia.users WHERE user_name = ' + '"' + username + '"', [], true);
         
         const fakeTweets = [];
         for(let i = 0; i < 30; i++) {
