@@ -1,6 +1,10 @@
 const common = require("./commonFunctions");
 const prompt = require("prompt-sync")();
 
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+  }
+
 async function getUserID(username) {
    const userID = await common.getData('SELECT user_id FROM SocialMedia.users WHERE user_name = ' + '"' + username + '"', [], true);
     console.log(userID)
@@ -57,15 +61,15 @@ async function deleteTweet() {
 
     if (numberOfTweets != undefined) {
         
-        const getUserID = await common.getData('SELECT user_id, user_name FROM SocialMedia.users WHERE user_name = ' + '"' + option + '"', [], true);
+        const userID = await common.getData('SELECT user_id, user_name FROM SocialMedia.users WHERE user_name = ' + '"' + option + '"', [], true);
    
-        const userinfo = await common.getData('SELECT * FROM SocialMedia.user_tweets WHERE user_id = ' + '"' + getUserID[0].user_id + '"', [], true);
+        const userinfo = await common.getData('SELECT * FROM SocialMedia.user_tweets WHERE user_id = ' + '"' + userID[0].user_id + '"', [], true);
         if (userinfo.length == 0) {
             console.log("The user " + getUserID[0].user_name + ' has no tweets')
         } else {
-            const tweetid = await listTweets("Enter the ID of the tweet you would like to delete", getUserID[0].user_id)
+            const tweetid = await listTweets("Enter the ID of the tweet you would like to delete", userID[0].user_id)
         
-            await common.getData('DELETE FROM SocialMedia.user_tweets WHERE user_id = ' + '"' + getUserID[0].user_id + '" AND tweet_id = ' + '"' + tweetid + '"', [], false);
+            await common.getData('DELETE FROM SocialMedia.user_tweets WHERE user_id = ' + '"' + userID[0].user_id + '" AND tweet_id = ' + '"' + tweetid + '"', [], false);
         }
     } else {
         console.log("you need to add some users!")
@@ -138,16 +142,14 @@ async function insertTweets() {
         
     if (rows.length != 0) {
 
-        const username = await listUsers();
+        const selectUser  = await listUsers("Select a user to insert tweets into ");
 
-        const personID = await common.getData('SELECT * FROM SocialMedia.users WHERE user_name = ' + '"' + username + '"', [], true);
-        
+        const userNameID = await getUserID(selectUser);
+
+        console.log('Inserting 1000 random tweets into ' + selectUser + 's account')
         const fakeTweets = [];
-        
-        console.log('Inserting 1000 random tweets into ' + username + 's account')
-
         for(let i = 0; i < 1000; i++) {
-            fakeTweets.push(common.createFakeTweet(personID[0].user_id.toString()));
+            fakeTweets.push(common.createFakeTweet(userNameID[0].user_id.toString()));
         }
     
         var insertTweetSQL = "INSERT INTO SocialMedia.user_tweets (tweet_text, date_posted, user_id) VALUES ?";
@@ -156,10 +158,12 @@ async function insertTweets() {
 
         const fakeUrls = [];
         
-        for(let i = 0; i < 1000; i++) {
-            fakeUrls.push(common.createFakeUrl(i));
+        const tweetOrderByIDs = await common.getData("SELECT COUNT(*) AS number_tweets FROM SocialMedia.user_tweets", [], true);
+        console.log(tweetOrderByIDs)
+        for(let i = tweetOrderByIDs[0].number_tweets - 1000; i < tweetOrderByIDs[0].number_tweets; i++) {
+        
+            fakeUrls.push(common.createFakeUrl(i + 1));
         }
-
         var insertTweetURLSQL = "INSERT INTO SocialMedia.tweet_urls (tweet_url, tweet_id) VALUES ?";
 
         await common.getData(insertTweetURLSQL, [fakeUrls], true);
@@ -198,9 +202,9 @@ async function deleteAccount() {
     if (rows.length != 0) {
         const username = await listUsers();
     
-        const getUserID = await getUserID(username)
+        const userID = await getUserID(username)
 
-        await common.getData('DELETE FROM SocialMedia.users WHERE user_name = ' + '"' + username + '" AND user_id = ' + '"' + getUserID[0].user_id + '"', [], false);
+        await common.getData('DELETE FROM SocialMedia.users WHERE user_name = ' + '"' + username + '" AND user_id = ' + '"' + userID[0].user_id + '"', [], false);
     } else {
         console.log("you need to insert some users!")
     }
