@@ -159,7 +159,7 @@ async function insertTweets() {
         const fakeUrls = [];
         
         const tweetOrderByIDs = await common.getData("SELECT COUNT(*) AS number_tweets FROM SocialMedia.user_tweets", [], true);
-        console.log(tweetOrderByIDs)
+       
         for(let i = tweetOrderByIDs[0].number_tweets - 1000; i < tweetOrderByIDs[0].number_tweets; i++) {
         
             fakeUrls.push(common.createFakeUrl(i + 1));
