@@ -41,6 +41,12 @@ async function listTweets(tweetPrompt, id) {
             console.log("ID " + userinfo[i].tweet_id);
             console.log("Text " + userinfo[i].tweet_text);
             console.log("Date Posted " + userinfo[i].date_posted);
+
+            const attachedURLs = await common.getData('SELECT * FROM SocialMedia.tweet_urls WHERE tweet_id = ' + '"' + userinfo[i].tweet_id + '"', [], true);
+            for(let i = 0; i<attachedURLs.length;i++) {
+                console.log("Attached URLs: " + attachedURLs[0].tweet_url);
+            }
+
             console.log("\n");
         }
 
@@ -147,8 +153,10 @@ async function insertTweets() {
         const userNameID = await getUserID(selectUser);
 
         console.log('Inserting 1000 random tweets into ' + selectUser + 's account')
+        var tweetOrderByIDs = await common.getData("SELECT COUNT(*) AS number_tweets FROM SocialMedia.user_tweets", [], true);
+       
         const fakeTweets = [];
-        for(let i = 0; i < 1000; i++) {
+        for(let i = tweetOrderByIDs[0].number_tweets - 1000; i < tweetOrderByIDs[0].number_tweets; i++) {
             fakeTweets.push(common.createFakeTweet(userNameID[0].user_id.toString()));
         }
     
@@ -158,15 +166,12 @@ async function insertTweets() {
 
         const fakeUrls = [];
         
-        const tweetOrderByIDs = await common.getData("SELECT COUNT(*) AS number_tweets FROM SocialMedia.user_tweets", [], true);
-       
-        for(let i = tweetOrderByIDs[0].number_tweets - 1000; i < tweetOrderByIDs[0].number_tweets; i++) {
-        
+        for(let i = tweetOrderByIDs[0].number_tweets; i < tweetOrderByIDs[0].number_tweets + 1000; i++) {
             fakeUrls.push(common.createFakeUrl(i + 1));
         }
+         
         var insertTweetURLSQL = "INSERT INTO SocialMedia.tweet_urls (tweet_url, tweet_id) VALUES ?";
-
-        await common.getData(insertTweetURLSQL, [fakeUrls], true);
+        await common.getData(insertTweetURLSQL, [fakeUrls], false);
     }
     
 }
@@ -200,7 +205,7 @@ async function deleteAccount() {
     const rows = await common.getData('SELECT * FROM SocialMedia.users ORDER BY user_name', [], true);
         
     if (rows.length != 0) {
-        const username = await listUsers();
+        const username = await listUsers("Select an account you want to remove from the database ");
     
         const userID = await getUserID(username)
 
@@ -215,8 +220,8 @@ async function likeTweet() {
     const username = await listUsers("Enter a username to get a list of their tweets");
     
     const firstUserID = await getUserID(username)
-
-    const userinfo = await common.getData('SELECT COUNT(original_user_id) AS user_likes FROM SocialMedia.user_likes WHERE original_user_id = ' + '"' + firstUserID[0].user_id + '"', [], true);
+    
+    const userinfo = await common.getData('SELECT COUNT(tweet_id) AS num_tweets FROM SocialMedia.user_tweets WHERE user_id = ' + '"' + firstUserID[0].user_id + '"', [], true);
 
     if (userinfo[0].user_likes == 0) {
         console.log("The user " + username + ' has no tweets')
