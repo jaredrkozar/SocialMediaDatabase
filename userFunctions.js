@@ -51,7 +51,7 @@ async function listTweets(tweetPrompt, id) {
 
 async function deleteTweet() {
     const username = await listUsers("Enter the username of the user whose tweet you would like to delete.");
-    const userinfo = await common.getData('SELECT user_id FROM SocialMedia.users WHERE user_name = ' + '"' + username + '"', [], true);
+    const userinfo = await getUserID(username);
 
     const numberOfTweets = await common.getData('SELECT COUNT(user_id) AS num_tweets FROM SocialMedia.user_tweets WHERE user_id = ' + '"' + userinfo[0].user_id + '"', [], true);
 
@@ -214,10 +214,9 @@ async function likeTweet() {
 
     const userinfo = await common.getData('SELECT COUNT(original_user_id) AS user_likes FROM SocialMedia.user_likes WHERE original_user_id = ' + '"' + firstUserID[0].user_id + '"', [], true);
 
-    if (userinfo == undefined) {
-        console.log("The user " + getUserID[0].user_name + ' has no tweets')
+    if (userinfo[0].user_likes == 0) {
+        console.log("The user " + username + ' has no tweets')
     } else {
-      
         const likeTweetPrompt = await listTweets("Enter the ID of the tweet you would like another user to like", firstUserID[0].user_id);
 
         const selectAnotherUserPrompt = prompt("Enter another user name from the list above who you want to like the above tweet");
