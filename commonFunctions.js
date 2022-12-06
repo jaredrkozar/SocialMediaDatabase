@@ -37,6 +37,14 @@ var connection = mysql.createConnection({
     ];
     }
     
+    function createFakeUrl(num) {
+      return [
+        faker.internet.url(),
+        num,
+    ];
+    }
+
+    
     function createNewUser() {
         const first = faker.name.firstName();
         const last = faker.name.lastName();
@@ -90,4 +98,5 @@ function createNewEmployeeAssignment(num) {
     num,
 ];
 }
-  module.exports = { getData, connection, createFakeTweet, createNewUser, createNewEmployee, createNewEmployeeProject, createNewEmployeeDepartment, createNewEmployeeAssignment }
+
+  module.exports = { getData, connection, createFakeTweet, createFakeUrl, createNewUser, createNewEmployee, createNewEmployeeProject, createNewEmployeeDepartment, createNewEmployeeAssignment }

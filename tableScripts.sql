@@ -51,17 +51,18 @@ CREATE TABLE user_followees (
 );
 
 CREATE TABLE blocked_users (
-    blocked_user_id BIGINT(255) PRIMARY KEY,
+    blocked_user_id BIGINT(255),
     user_id BIGINT(255),
     FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     INDEX(blocked_user_id, user_id)
 );
 
 CREATE TABLE tweet_urls (
-    tweet_url_id BIGINT(255) PRIMARY KEY,
+	tweet_url_id BIGINT(255) PRIMARY KEY AUTO_INCREMENT,
+    tweet_url VARCHAR(255),
     tweet_id BIGINT(255),
     FOREIGN KEY(tweet_id) REFERENCES user_tweets(tweet_id) ON DELETE CASCADE,
-    INDEX(tweet_url_id, tweet_id)
+    INDEX(tweet_url, tweet_id, tweet_url_id)
 );
 
 CREATE TABLE employees (
@@ -98,5 +99,5 @@ CREATE TABLE employee_assignment (
     assignment_duedate DATE,
     employee_id BIGINT(255),
     FOREIGN KEY(employee_id) REFERENCES employees(employee_id) ON DELETE CASCADE,
-    INDEX(assignment_name, assignment_duedate, project_duedate, employee_id)
+    INDEX(assignment_name, assignment_duedate, employee_id)
 );

@@ -1,6 +1,12 @@
 const common = require("./commonFunctions");
 const prompt = require("prompt-sync")();
 
+async function getUserID(username) {
+   const userID = await common.getData('SELECT user_id FROM SocialMedia.users WHERE user_name = ' + '"' + username + '"', [], true);
+    console.log(userID)
+    return userID
+}
+
 async function listUsers(userPrompt) {
     option = "next"
     var userOffset = 0;
@@ -137,17 +143,25 @@ async function insertTweets() {
         
         const fakeTweets = [];
         
+        console.log('Inserting 30 random tweets into ' + username + 's account')
+
         for(let i = 0; i < 1000; i++) {
             fakeTweets.push(common.createFakeTweet(personID[0].user_id.toString()));
         }
     
         var insertTweetSQL = "INSERT INTO SocialMedia.user_tweets (tweet_text, date_posted, user_id) VALUES ?";
     
-        const getuserName = await common.getData('SELECT user_name FROM SocialMedia.users WHERE user_id = ' + '"' + personID[0].user_id + '"', [], true);
-    
-        console.log('Inserting 30 random tweets into ' + getuserName[0].user_name + 'account')
-
         await common.getData(insertTweetSQL, [fakeTweets], false);
+        
+        const fakeUrls = [];
+        
+        for(let i = 0; i < 1000; i++) {
+            fakeUrls.push(common.createFakeUrl(i));
+        }
+
+        var insertTweetURLSQL = "INSERT INTO SocialMedia.tweet_urls (tweet_url, tweet_id) VALUES ?";
+
+        await common.getData(insertTweetURLSQL, [fakeUrls], false);
     
     }
     
@@ -215,23 +229,21 @@ async function likeTweet() {
 
 async function blockUser() {
     const option = await listUsers("Enter the username of the user");
-
-    const getUserID = await common.getData('SELECT user_id FROM SocialMedia.users WHERE user_name = ' + '"' + option + '"', [], true);
     
     const whoWantsToBlockUser = prompt("Enter the username of the user wnats to block the above user");
+    const blockedUserID = await getUserID(option)
+    const currentUserID = await getUserID(whoWantsToBlockUser)
 
-    const whoWantsToBlockUserID = await common.getData('SELECT user_id FROM SocialMedia.users WHERE user_name = ' + '"' + whoWantsToBlockUser + '"', [], true);
+    const isUserAlreadyBlocked = await common.getData("SELECT * from SocialMedia.blocked_users WHERE EXISTS(SELECT * FROM SocialMedia.blocked_users WHERE blocked_user_id = " + "'" + blockedUserID[0].user_id + "' AND user_id = " + "'" + currentUserID[0].user_id + "')", [], true)
 
-    const isUserAlreadyBlocked = await common.getData("SELECT * from SocialMedia.blocked_users WHERE EXISTS(SELECT * FROM SocialMedia.blocked_users WHERE blocked_user_id = " + "'" + whoWantsToBlockUserID + "' AND user_id = " + "'" + getUserID + "')", [], true)
-
-    if (isUserAlreadyBlocked.length < 0) {
-        await common.getData("INSERT INTO SocialMedia.blocked_users (blocked_user_id, user_id) VALUES (" + "'" + whoWantsToBlockUserID + "'", "'" + option + "'", [], false);
+    if (isUserAlreadyBlocked.length == 0) {
+        await common.getData("INSERT INTO SocialMedia.blocked_users (blocked_user_id, user_id) VALUES (" + "'" + blockedUserID[0].user_id + "', '" + currentUserID[0].user_id + "')", [], false);
     } else {
         console.log("This user is already blocked. Do you want to unblock them? Type yes or no")
         const unblockUser = prompt("");
 
         if(unblockUser == "yes") {
-            await common.getData("DELETE FROM SocialMedia.blocked_users WHERE blocked_user_id = " + "'" + whoWantsToBlockUserID + "'" + "AND user_id = " + "'" + option + "'", [], false);
+            await common.getData("DELETE FROM SocialMedia.blocked_users WHERE blocked_user_id = " + "'" + blockedUserID[0].user_id + "'" + "AND user_id = " + "'" + currentUserID[0].user_id + "'", [], false);
         }
 
     }

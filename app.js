@@ -3,7 +3,7 @@ const user = require('./userFunctions.js');
 const employee = require('./employeeFunctions.js');
 
 async function getUserInput() {
-    console.log("What would you like to do? Type: \n - view-user to view users \n - new-user to insert some random users \n - new-tweet to add some sample tweets \n - new-user to add a new user \n - delete-tweet to delete someones tweet \n - delete-account to delete a user \n - like-tweet to like a users tweet \n - block-user to block a user \n - back to go back s");
+    console.log("What would you like to do? Type: \n - view-user to view users \n - new-user to insert some random users \n - new-tweet to add some sample tweets \n - delete-tweet to delete someones tweet \n - delete-account to delete a user \n - block-user to block a user \n - like-tweet to like a users tweet \n - block-user to block a user \n - back to go back s");
     var option = prompt("");
 
     while(option!= "back") {
@@ -25,11 +25,11 @@ async function getUserInput() {
             await user.blockUser();
         }else {
             console.log("\r\n"); 
-            console.log("What would you like to do? Type: \n - view-user to view users \n - new-tweet to add some sample tweets \n - new-user to add a new user \n - delete-tweet to delete someones tweet \n - delete-account to delete a user \n - like-tweet to like a users tweet \n - block-user to block a user. \n - back to go back ");
+            console.log("What would you like to do? Type: \n - view-user to view users \n - new-user to insert some random users \n - new-tweet to add some sample tweets \n - delete-tweet to delete someones tweet \n - delete-account to delete a user \n - block-user to block a user \n - like-tweet to like a users tweet \n - block-user to block a user \n - back to go back ");
             option = prompt("");
         }
         console.log("\r\n"); 
-        console.log("What would you like to do? Type: \n - view-user to view users \n - new-tweet to add some sample tweets \n - new-user to add a new user \n - delete-tweet to delete someones tweet \n - delete-account to delete a user \n - like-tweet to like a users tweet \n - block-user to block a user.\n - back to go back  ");
+        console.log("What would you like to do? Type: \n - view-user to view users \n - new-user to insert some random users \n - new-tweet to add some sample tweets \n - delete-tweet to delete someones tweet \n - delete-account to delete a user \n - block-user to block a user \n - like-tweet to like a users tweet \n - block-user to block a user \n - back to go back ");
         option = prompt("");
     }
     init();
