@@ -20,6 +20,7 @@ var connection = mysql.createConnection({
     database.query('SET GLOBAL wait_timeout=28800')
     database.query('SET GLOBAL interactive_timeout=28800')
 
+    console.log("SQL Query " + query)
       const [rows, fields] = await database.query(query, array);
       database.end();
       return shouldReturn == true ? rows : null;
