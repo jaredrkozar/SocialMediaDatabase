@@ -1,6 +1,6 @@
 # SocialMediaDatabase
 
-1. Installing software:
+1. INSTALLING SOFTWARE:
 
 To be able to run the program, you need to have the following packages and software installed:
 
@@ -18,9 +18,9 @@ To be able to run the program, you need to have the following packages and softw
 
 - run the tableScripts.sql in SQLWorkbench
 
-- Make sure to change "SocialMedia" to your database name
+- Make sure to change "SocialMedia" to your database name using find and replace
 
-3. Running
+3. RUNNING THE PROGRAM
 
 - to start, enter node app.js to start the program
 
