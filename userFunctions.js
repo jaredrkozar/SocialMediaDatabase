@@ -30,8 +30,7 @@ async function listTweets(tweetPrompt, id) {
     option = "next"
     var tweetOffset = 0;
 
-    while(option == "next") {
-        console.log(id)
+    do {
         const userinfo = await common.getData('SELECT * FROM SocialMedia.user_tweets WHERE user_id = ' + '"' + id + '" LIMIT 5 OFFSET ' + tweetOffset, [], true);
        
         for(let i = 0; i<userinfo.length;i++) {
@@ -45,6 +44,8 @@ async function listTweets(tweetPrompt, id) {
         
         option = prompt(tweetPrompt + " Enter next to view the next 5 tweets in the list: ");
     }
+    while(option == "next")
+
     return parseInt(option);
 }
 
@@ -72,7 +73,7 @@ async function deleteTweet() {
 }
 
 async function insertUsers() {
-    console.log("Inserting 30 random users into the database...")
+    console.log("Inserting 1000 random users into the database...")
     
     const newUsers = [];
 
@@ -143,7 +144,7 @@ async function insertTweets() {
         
         const fakeTweets = [];
         
-        console.log('Inserting 30 random tweets into ' + username + 's account')
+        console.log('Inserting 1000 random tweets into ' + username + 's account')
 
         for(let i = 0; i < 1000; i++) {
             fakeTweets.push(common.createFakeTweet(personID[0].user_id.toString()));
@@ -152,7 +153,7 @@ async function insertTweets() {
         var insertTweetSQL = "INSERT INTO SocialMedia.user_tweets (tweet_text, date_posted, user_id) VALUES ?";
     
         await common.getData(insertTweetSQL, [fakeTweets], false);
-        
+
         const fakeUrls = [];
         
         for(let i = 0; i < 1000; i++) {
@@ -161,28 +162,33 @@ async function insertTweets() {
 
         var insertTweetURLSQL = "INSERT INTO SocialMedia.tweet_urls (tweet_url, tweet_id) VALUES ?";
 
-        await common.getData(insertTweetURLSQL, [fakeUrls], false);
-    
+        await common.getData(insertTweetURLSQL, [fakeUrls], true);
     }
     
 }
 
 async function followUser() {
 
-        const username = await listUsers();
+        const username = await listUsers("Select an account");
 
         const followSecondUser = prompt("Select an account who you want " + username + " to follow");
 
-        const getSecondUserID = await common.getData('SELECT user_id FROM SocialMedia.users WHERE user_name = ' + '"' + followSecondUser + '"', [], true);
+        const firstUserID = await getUserID(username)
+        const secondUserID = await getUserID(followSecondUser)
 
-        const isFollowing = await common.getData("SELECT * from SocialMedia.user_followers WHERE EXISTS(SELECT * FROM SocialMedia.user_followers WHERE user_follower_id = " + "'" + getUserID[0].user_id + "' AND current_user_id = " + "'" + getSecondUserID[0].user_id + "')", [], true)
-
+        const isFollowing = await common.getData("SELECT * from SocialMedia.user_followers WHERE EXISTS(SELECT * FROM SocialMedia.user_followers WHERE user_follower_id = " + "'" + firstUserID[0].user_id + "' AND current_user_id = " + "'" + secondUserID[0].user_id + "')", [], true)
+       
         if(0 < isFollowing.length) {
-            await common.getData('DELETE FROM SocialMedia.user_followers WHERE user_follower_id = ' + '"' + getUserID[0].user_id + '" AND current_user_id = ' + '"' + getSecondUserID[0].user_id + '"', [], false)
-            await common.getData('DELETE FROM SocialMedia.user_followees WHERE user_followee_id = ' + '"' + getSecondUserID[0].user_id + '" AND current_user_id = ' + '"' + getUserID[0].user_id + '"', [], false)
-        } else {
-            await common.getData("INSERT INTO SocialMedia.user_followers (user_follower_id, current_user_id) VALUES (" + '"' + getUserID[0].user_id + '", "' + getSecondUserID[0].user_id + '")', [], false);
-            await common.getData("INSERT INTO SocialMedia.user_followees (user_followee_id, current_user_id) VALUES (" + '"' + getSecondUserID[0].user_id + '", "' + getUserID[0].user_id + '")', [], false);
+            console.log("Are you sure you want to unfollow" + followSecondUser + "them? Type yes or no")
+            const unfollowUser = prompt("");
+    
+            if(unfollowUser == "yes") {
+                await common.getData('DELETE FROM SocialMedia.user_followers WHERE user_follower_id = ' + '"' + firstUserID[0].user_id + '" AND current_user_id = ' + '"' + secondUserID[0].user_id + '"', [], false)
+                await common.getData('DELETE FROM SocialMedia.user_followees WHERE user_followee_id = ' + '"' + secondUserID[0].user_id + '" AND current_user_id = ' + '"' + firstUserID[0].user_id + '"', [], false)
+            }else {
+                await common.getData("INSERT INTO SocialMedia.user_followers (user_follower_id, current_user_id) VALUES (" + '"' + firstUserID[0].user_id + '", "' + secondUserID[0].user_id + '")', [], false);
+                await common.getData("INSERT INTO SocialMedia.user_followees (user_followee_id, current_user_id) VALUES (" + '"' + secondUserID[0].user_id + '", "' + firstUserID[0].user_id + '")', [], false);
+            }
         }
 }
 
@@ -192,7 +198,7 @@ async function deleteAccount() {
     if (rows.length != 0) {
         const username = await listUsers();
     
-        const getUserID = await common.getData('SELECT user_id FROM SocialMedia.users WHERE user_name = ' + '"' + username + '"', [], true);
+        const getUserID = await getUserID(username)
 
         await common.getData('DELETE FROM SocialMedia.users WHERE user_name = ' + '"' + username + '" AND user_id = ' + '"' + getUserID[0].user_id + '"', [], false);
     } else {
@@ -203,26 +209,27 @@ async function deleteAccount() {
 
 async function likeTweet() {
     const username = await listUsers("Enter a username to get a list of their tweets");
-    const getUserID = await common.getData('SELECT user_id FROM SocialMedia.users WHERE user_name = ' + '"' + username + '"', [], true);
     
-    const userinfo = await common.getData('SELECT COUNT(original_user_id) AS user_likes FROM SocialMedia.user_likes WHERE original_user_id = ' + '"' + getUserID[0].user_id + '"', [], true);
+    const firstUserID = await getUserID(username)
+
+    const userinfo = await common.getData('SELECT COUNT(original_user_id) AS user_likes FROM SocialMedia.user_likes WHERE original_user_id = ' + '"' + firstUserID[0].user_id + '"', [], true);
 
     if (userinfo == undefined) {
         console.log("The user " + getUserID[0].user_name + ' has no tweets')
     } else {
-        console.log(getUserID[0].user_id)
-        const likeTweetPrompt = await listTweets("Enter the ID of the tweet you would like another user to like", getUserID[0].user_id);
+      
+        const likeTweetPrompt = await listTweets("Enter the ID of the tweet you would like another user to like", firstUserID[0].user_id);
 
         const selectAnotherUserPrompt = prompt("Enter another user name from the list above who you want to like the above tweet");
 
-        const getSecondUserID = await common.getData("SELECT user_id FROM SocialMedia.users WHERE user_name = '" + selectAnotherUserPrompt + "'", [], true);
+        const getSecondUserID = await getUserID(selectAnotherUserPrompt)
 
-        const isTweetAlreadyLiked = await common.getData("SELECT * from SocialMedia.user_likes WHERE EXISTS(SELECT * FROM SocialMedia.user_likes WHERE tweet_id = " + "'" + likeTweetPrompt + "' AND user_id = " + "'" + selectAnotherUserPrompt + "')", [], true)
+        const isTweetAlreadyLiked = await common.getData("SELECT * from SocialMedia.user_likes WHERE EXISTS(SELECT * FROM SocialMedia.user_likes WHERE tweet_id = " + "'" + likeTweetPrompt + "' AND user_id = " + "'" + getSecondUserID[0].user_id + "')", [], true)
 
         if (isTweetAlreadyLiked.length != 0) {
-            await common.getData("DELETE FROM SocialMedia.user_likes WHERE tweet_id = " + "'" + likeTweetPrompt + "'" + "AND user_id = " + "'" + getSecondUserID + "'", [], false);
+            await common.getData("DELETE FROM SocialMedia.user_likes WHERE tweet_id = " + "'" + likeTweetPrompt + "'" + "AND user_id = " + "'" + getSecondUserID[0].user_id + "'", [], false);
         } else {
-            await common.getData("INSERT INTO SocialMedia.user_likes (tweet_id, user_id, original_user_id) VALUES (" + "'" + likeTweetPrompt + "', '" + getSecondUserID[0].user_id + "', '" + getUserID[0].user_id + "')", [], false);
+            await common.getData("INSERT INTO SocialMedia.user_likes (tweet_id, user_id, original_user_id) VALUES (" + "'" + likeTweetPrompt + "', '" + getSecondUserID[0].user_id + "', '" + firstUserID[0].user_id + "')", [], false);
         }
     }
 }
