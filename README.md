@@ -16,9 +16,11 @@ To be able to run the program, you need to have the following packages and softw
 
 - Make sure to enter your SQL username and password in the commonfunctions.js file. 
 
-- run the tableScripts.sql in SQLWorkbench
+- create a new schema in SQLWorkbench named SocialMedia (or you can choose any name)
 
-- Make sure to change "SocialMedia" to your database name using find and replace
+- run the tableScripts.sql in SQLWorkbench to create the tables
+
+- If you changed the database name to something other than SocialMedia, make sure to change the SQL calls in the code using find and replace
 
 3. RUNNING THE PROGRAM
 
@@ -28,6 +30,8 @@ To be able to run the program, you need to have the following packages and softw
 
 - if you type user, you can then select between creating new users, viewing users, blocking users, liking tweets, deleting tweets and accounts, and following users
 
-- If you are an employee, you have the option f creating new employees, viewing employees, and removing employees
+- If you are an employee, you have the option of creating new employees, viewing employees, and removing employees
 
 - enter one of the commands to run the selected function. Type back to select between users and employees
+
+NOTE: You may get a ERR TIMOUT error message every so often. This is normal, and to fix it, just run the program again 
